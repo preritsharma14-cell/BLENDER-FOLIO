@@ -1,7 +1,6 @@
 import { motion } from "framer-motion";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge"; // Assuming Badge might exist or I can use standard div if not
-import { ExternalLink } from "lucide-react";
+import { ExternalLink, Play } from "lucide-react";
 
 interface ProjectProps {
   project: {
@@ -11,6 +10,8 @@ interface ProjectProps {
     image: string;
     description: string;
     tools: string[];
+    isVideo?: boolean;
+    videoUrl?: string;
   };
 }
 
@@ -23,17 +24,40 @@ export default function ProjectCard({ project }: ProjectProps) {
       className="group"
     >
       <Card className="overflow-hidden border-border bg-card hover:border-primary/50 transition-colors h-full flex flex-col">
-        <div className="relative aspect-video overflow-hidden">
-          <img
-            src={project.image}
-            alt={project.title}
-            className="object-cover w-full h-full transition-transform duration-500 group-hover:scale-105"
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-4">
+        <div className="relative aspect-video overflow-hidden bg-muted">
+          {project.isVideo ? (
+            <video
+              src={project.videoUrl}
+              poster={project.image}
+              autoPlay
+              muted
+              loop
+              playsInline
+              className="object-cover w-full h-full transition-transform duration-500 group-hover:scale-105"
+            />
+          ) : (
+            <img
+              src={project.image}
+              alt={project.title}
+              className="object-cover w-full h-full transition-transform duration-500 group-hover:scale-105"
+            />
+          )}
+          
+          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-4">
             <span className="text-white font-medium flex items-center gap-2">
-              View Project <ExternalLink className="w-4 h-4" />
+              {project.isVideo ? (
+                <>Watch Demo <Play className="w-4 h-4 fill-current" /></>
+              ) : (
+                <>View Detail <ExternalLink className="w-4 h-4" /></>
+              )}
             </span>
           </div>
+          
+          {project.isVideo && (
+            <div className="absolute top-2 right-2 bg-primary/90 text-white text-[10px] font-bold px-2 py-0.5 rounded uppercase tracking-wider">
+              Video
+            </div>
+          )}
         </div>
         
         <CardHeader className="p-4 pb-2">
