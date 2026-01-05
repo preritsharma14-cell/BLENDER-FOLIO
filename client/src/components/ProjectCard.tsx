@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { ExternalLink, Play } from "lucide-react";
+import { useEffect, useRef } from "react";
 
 interface ProjectProps {
   project: {
@@ -16,6 +17,16 @@ interface ProjectProps {
 }
 
 export default function ProjectCard({ project }: ProjectProps) {
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  useEffect(() => {
+    if (project.isVideo && videoRef.current) {
+      videoRef.current.play().catch(error => {
+        console.log("Autoplay was prevented:", error);
+      });
+    }
+  }, [project.isVideo]);
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -27,6 +38,7 @@ export default function ProjectCard({ project }: ProjectProps) {
         <div className="relative aspect-video overflow-hidden bg-muted">
           {project.isVideo ? (
             <video
+              ref={videoRef}
               src={project.videoUrl}
               poster={project.image}
               autoPlay
